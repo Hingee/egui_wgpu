@@ -1,0 +1,55 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+name = "app_core"
+
+[dependencies]
+anyhow = "1.0"
+bytemuck = { version = "1.24.0", features = ["derive"] }
+egui = "0.33.3"
+egui-wgpu = { version = "0.33.3", features = ["winit"] }
+futures = "0.3.31"
+log = "0.4.29"
+nalgebra-glm = { version = "0.20.0", features = [
+    "convert-bytemuck",
+    "serde-serialize",
+] }
+openxr = { version = "0.19", features = ["loaded"], optional = true }
+web-time = "1.1.0"
+wgpu = { version = "27.0.1", default-features = false }
+winit = "0.30.12"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+ash = { version = "0.38", optional = true }
+env_logger = "0.11.8"
+egui-winit = "0.33.3"
+gpu-allocator = { version = "0.28", optional = true }
+pollster = "0.4.0"
+wgpu-hal = { version = "27.0.4", optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1.7"
+console_log = "1.0.0"
+egui-winit = { version = "0.33.3", default-features = false }
+wasm-bindgen = "0.2.106"
+wasm-bindgen-futures = "0.4.56"
+
+[target.'cfg(target_os = "android")'.dependencies]
+android-activity = { version = "0.6", features = ["native-activity"] }
+android_logger = "0.15"
+egui-winit = { version = "0.33.3", default-features = false }
+ndk-context = "0.1"
+ndk-sys = "0.6"
+
+[features]
+default = ["wgpu/default"]
+openxr = ["dep:openxr", "dep:ash", "dep:wgpu-hal", "dep:gpu-allocator"]
+webgl = ["wgpu/webgl"]
+webgpu = ["wgpu/webgpu"]
+
